@@ -16,17 +16,23 @@
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
-    var x = canvas.width / 2;
-    var y = canvas.height - 30;
+    var canvasWidth = canvas.width;
+    var canvasHeight = canvas.height;
+
+    var x = canvasWidth / 2;
+    var y = canvasHeight - 30;
     var ballRadius = 10;
-    var ballColor = randomColor();
 
     var paddleHeight = 10;
     var paddleWidth = 75;
-    var paddleX = (canvas.width-paddleWidth)/2;
+    var paddleX = (canvasWidth-paddleWidth)/2;
 
-    var dx = 2;
-    var dy = -2;
+    var ballDX = 2;
+    var ballDY = -2;
+    var paddleDX = 7;
+
+    var ballColor = randomColor();
+    var paddleColor = randomColor();
 
     var rightPressed = false;
     var leftPressed = false;
@@ -45,34 +51,39 @@
 
     function drawPaddle() {
         ctx.beginPath();
-        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-        ctx.fillStyle = "#0095DD";
+        ctx.rect(paddleX, canvasHeight-paddleHeight, paddleWidth, paddleHeight);
+        ctx.fillStyle = paddleColor;
         ctx.fill();
         ctx.closePath();
     }
 
     function draw() {
-        ctx.clearRect(0,0, canvas.width, canvas.height);
+        ctx.clearRect(0,0, canvasWidth, canvasHeight);
         drawBall();
         drawPaddle();
 
-        if(rightPressed && paddleX < canvas.width - paddleWidth) {
-            paddleX += 7;
+        if(rightPressed && paddleX < canvasWidth - paddleWidth) {
+            paddleX += paddleDX;
         }else if(leftPressed && paddleX > 0) {
-            paddleX -= 7;
+            paddleX -= paddleDX;
         }
 
-        if(y + dy < ballRadius || y + dy > canvas.height - ballRadius) {
+        if(y + ballDY < ballRadius || y + ballDY > canvasHeight - ballRadius) {
             ballColor = randomColor();
-            dy = -dy;
+            ballDY = -ballDY;
         }
-        if(x + dx < ballRadius || x + dx > canvas.width - ballRadius) {
+        if(x + ballDX < ballRadius || x + ballDX > canvasWidth - ballRadius) {
             ballColor = randomColor();
-            dx = -dx;
+            ballDX = -ballDX;
         }
 
-        x += dx;
-        y += dy;
+        if(y + ballDY > canvasHeight - paddleHeight - ballRadius && (x + ballDX > paddleX - ballRadius || x + ballDX < (paddleX + paddleWidth) - ballRadius)) {
+            ballDY = -ballDY;
+            paddleColor = randomColor();
+        }
+
+        x += ballDX;
+        y += ballDY;
     }
 
     function keyDownHandler(e) {
