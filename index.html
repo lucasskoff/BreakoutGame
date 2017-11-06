@@ -68,18 +68,21 @@
             paddleX -= paddleDX;
         }
 
-        if(y + ballDY < ballRadius || y + ballDY > canvasHeight - ballRadius) {
+        if(y + ballDY < ballRadius) {
             ballColor = randomColor();
             ballDY = -ballDY;
+        }else if(y + ballDY > canvasHeight - ballRadius) {
+            if(x > paddleX && paddleX + paddleWidth) {
+                ballDY = -ballDY;
+                paddleColor = randomColor();
+            }else {
+                alert("GAME OVER");
+                document.location.reload();
+            }
         }
         if(x + ballDX < ballRadius || x + ballDX > canvasWidth - ballRadius) {
             ballColor = randomColor();
             ballDX = -ballDX;
-        }
-
-        if(y + ballDY > canvasHeight - paddleHeight - ballRadius && (x + ballDX > paddleX - ballRadius || x + ballDX < (paddleX + paddleWidth) - ballRadius)) {
-            ballDY = -ballDY;
-            paddleColor = randomColor();
         }
 
         x += ballDX;
